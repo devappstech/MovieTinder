@@ -1,0 +1,24 @@
+{
+  "name": "movie",
+  "version": "1.0.0",
+  "description": "Fastest Way to find your next movie",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Maxence Boucas",
+  "license": "ISC",
+  "dependencies": {
+    "babel-preset-node5": "^11.1.0",
+    "casual": "^1.5.8",
+    "express": "^4.14.0",
+    "express-graphql": "^0.6.1",
+    "graphql": "^0.8.2",
+    "lodash": "^4.17.2",
+    "mysql": "^2.12.0",
+    "react": "^15.4.0",
+    "react-dom": "^15.4.0",
+    "react-native": "^0.37.0",
+    "sequelize": "^3.26.0"
+  }
+}
