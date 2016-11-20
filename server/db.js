@@ -3,7 +3,7 @@ import casual from 'casual';
 import _ from 'lodash';
 
 const db = new Sequelize(
-  'ToWatch',
+  'towatch',
   'root',
   'root',
   {
@@ -26,6 +26,10 @@ const Movie = db.define('movie', {
     type: Sequelize.STRING,
     allowNull: false
   },
+  year: {
+    type: Sequelize.INTEGER,
+    allowNull: false
+  },
   rating: {
     type: Sequelize.FLOAT,
     allowNull: false
@@ -33,17 +37,11 @@ const Movie = db.define('movie', {
 });
 
 const User = db.define('user', {
-  nick: {
-    type: Sequelize.STRING,
-    allowNull: false
-  },
   id_fb: {
     type: Sequelize.STRING,
-    allowNull: false
+    allowNull: false,
+    unique: true
   },
-});
-
-const Seance = db.define('seance', {
 });
 
 const UserMovie = db.define('user_movie', {
@@ -52,7 +50,6 @@ const UserMovie = db.define('user_movie', {
 User.belongsToMany(Movie, { through: UserMovie });
 Movie.belongsToMany(User, { through: UserMovie });
 
-Seance.hasMany(User);
-User.belongsTo(Seance);
+db.sync();
 
 export { db };

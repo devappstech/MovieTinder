@@ -38,6 +38,12 @@ const Movie = new GraphQLObjectType({
           return movie.img;
         }
       },
+      year: {
+        type: GraphQLInt,
+        resolve (movie) {
+          return movie.year;
+        }
+      },
       rating: {
         type: GraphQLString,
         resolve (movie) {
@@ -59,12 +65,6 @@ const User = new GraphQLObjectType({
           return user.id;
         }
       },
-      nick: {
-        type: GraphQLString,
-        resolve (user) {
-          return user.nick;
-        }
-      },
       id_fb: {
         type: GraphQLString,
         resolve (user) {
@@ -81,27 +81,6 @@ const User = new GraphQLObjectType({
   }
 });
 
-const Seance = new GraphQLObjectType({
-  name: 'Seance',
-  description: 'This represents a Seance',
-  fields: () => {
-    return {
-      id: {
-        type: GraphQLInt,
-        resolve (seance) {
-          return seance.id;
-        }
-      },
-      users: {
-        type: new GraphQLList(User),
-        resolve(seance){
-          return seance.getUsers();
-        }
-      }
-    };
-  }
-});
-
 const Query = new GraphQLObjectType({
   name: 'Query',
   description: 'Root query object',
@@ -110,23 +89,26 @@ const Query = new GraphQLObjectType({
       movies: {
         type: new GraphQLList(Movie),
         args: {
-          id: {
+          offset: {
+            type: GraphQLInt
+          },
+          limit: {
             type: GraphQLInt
           }
         },
-        resolve (root, args) {
-          return db.models.movie.findAll({ where: args, order: [['rating', 'DESC']] });
+        resolve (root,args) {
+          return db.models.movie.findAll({order: [['rating', 'DESC']], offset: args.offset, limit: args.limit });
         }
       },
-      seance: {
-        type: Seance,
+      users: {
+        type: User,
         args: {
-          id: {
+          id_fb: {
             type: GraphQLInt
           }
         },
         resolve (root, args) {
-          return db.models.seance.findOne({ where: args});
+          return db.models.user.findOne({ where: args});
         }
       }
     };
@@ -150,6 +132,9 @@ const Mutation = new GraphQLObjectType({
           img: {
             type: new GraphQLNonNull(GraphQLString)
           },
+          year: {
+            type: new GraphQLNonNull(GraphQLInt)
+          },
           rating: {
             type: new GraphQLNonNull(GraphQLFloat)
           }
@@ -160,6 +145,7 @@ const Mutation = new GraphQLObjectType({
             description: args.description,
             img: args.img,
             rating: args.rating,
+            year: args.year,
           });
         }
       },
@@ -191,64 +177,15 @@ const Mutation = new GraphQLObjectType({
           return db.models.user.findOne({ where: args.id_user}).then(user => {user.removeMovie(args.id_movie);});
         }
       },
-      addUserToSeance: {
-        type: Seance,
-        args:{
-          id_seance: {
-            type: new GraphQLNonNull(GraphQLInt)
-          },
-          id_user: {
-            type: new GraphQLNonNull(GraphQLInt)
-          }
-        },
-        resolve (_, args) {
-          return db.models.seance.findOne({ where: args.id_seance}).then(user => {user.addUser(args.id_user);});
-        }
-      },
-      removeUserToSeance: {
-        type: Seance,
-        args:{
-          id_seance: {
-            type: new GraphQLNonNull(GraphQLInt)
-          },
-          id_user: {
-            type: new GraphQLNonNull(GraphQLInt)
-          }
-        },
-        resolve (_, args) {
-          return db.models.seance.findOne({ where: args.id_seance}).then(user => {user.removeUser(args.id_user);});
-        }
-      },
-      addSeance: {
-        type: Seance,
-        resolve (_, args) {
-          return db.models.seance.create();
-        }
-      },
-      removeSeance: {
-        type: Seance,
-        args:{
-          id: {
-            type: new GraphQLNonNull(GraphQLInt)
-          }
-        },
-        resolve (_, args) {
-          return db.models.seance.findOne({ where: args}).distroy();
-        }
-      },
       addUser: {
         type: User,
         args:{
-          nick: {
-            type: new GraphQLNonNull(GraphQLString)
-          },
           id_fb: {
             type: new GraphQLNonNull(GraphQLString)
           },
         },
         resolve (_, args) {
           return db.models.user.create({
-            title: args.nick,
             id_fb: args.id_fb,
           });
         }

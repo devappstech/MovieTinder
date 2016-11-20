@@ -6,12 +6,14 @@ import {StyleSheet, Text, View, Image} from 'react-native';
 
 import SwipeCards from 'react-native-swipe-cards';
 
+import api from './api/api.js';
+
 let Card = React.createClass({
   render() {
     return (
       <View style={styles.card}>
-        <Image style={styles.thumbnail} source={{uri: this.props.image}} />
-        <Text style={styles.text}>This is card {this.props.name}</Text>
+        <Text style={styles.title}>{this.props.title}</Text>
+        <Image style={styles.img} source={{uri: this.props.img}} />
       </View>
     )
   }
@@ -28,23 +30,13 @@ let NoMoreCards = React.createClass({
 })
 
 const Cards = [
-  {name: '1', image: 'https://media.giphy.com/media/GfXFVHUzjlbOg/giphy.gif'},
-  {name: '2', image: 'https://media.giphy.com/media/irTuv1L1T34TC/giphy.gif'},
-  {name: '3', image: 'https://media.giphy.com/media/LkLL0HJerdXMI/giphy.gif'},
-  {name: '4', image: 'https://media.giphy.com/media/fFBmUMzFL5zRS/giphy.gif'},
-  {name: '5', image: 'https://media.giphy.com/media/oDLDbBgf0dkis/giphy.gif'},
-  {name: '6', image: 'https://media.giphy.com/media/7r4g8V2UkBUcw/giphy.gif'},
-  {name: '7', image: 'https://media.giphy.com/media/K6Q7ZCdLy8pCE/giphy.gif'},
-  {name: '8', image: 'https://media.giphy.com/media/hEwST9KM0UGti/giphy.gif'},
-  {name: '9', image: 'https://media.giphy.com/media/3oEduJbDtIuA2VrtS0/giphy.gif'},
+  {title: '' , img: 'https://images-na.ssl-images-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_SX300.jpg', description: 'ksjdkjskdskjdsj jksjdksjd kdj sdkj'},
 ]
 
-const Cards2 = [
-  {name: '10', image: 'https://media.giphy.com/media/12b3E4U9aSndxC/giphy.gif'},
-  {name: '11', image: 'https://media4.giphy.com/media/6csVEPEmHWhWg/200.gif'},
-  {name: '12', image: 'https://media4.giphy.com/media/AA69fOAMCPa4o/200.gif'},
-  {name: '13', image: 'https://media.giphy.com/media/OVHFny0I7njuU/giphy.gif'},
-]
+const Cards2 = []
+var movies = api.getMovies().then(res => { Cards =res;})
+
+console.log(Cards2)
 
 export default React.createClass({
   getInitialState() {
@@ -107,16 +99,20 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderWidth: 1,
     elevation: 1,
+    height: 500,
   },
-  thumbnail: {
+  img: {
     flex: 1,
     width: 300,
     height: 300,
   },
-  text: {
+  title: {
     fontSize: 20,
     paddingTop: 10,
     paddingBottom: 10
+  },
+  description: {
+    fontSize: 10
   },
   noMoreCards: {
     flex: 1,
