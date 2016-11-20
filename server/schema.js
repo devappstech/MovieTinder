@@ -100,7 +100,7 @@ const Query = new GraphQLObjectType({
           return db.models.movie.findAll({order: [['rating', 'DESC']], offset: args.offset, limit: args.limit });
         }
       },
-      users: {
+      user: {
         type: User,
         args: {
           id_fb: {
@@ -155,12 +155,12 @@ const Mutation = new GraphQLObjectType({
           id_movie: {
             type: new GraphQLNonNull(GraphQLInt)
           },
-          id_user: {
+          id_fb: {
             type: new GraphQLNonNull(GraphQLInt)
           }
         },
         resolve (_, args) {
-          return db.models.user.findOne({ where: args.id_user}).then(user => {user.addMovie(args.id_movie);});
+          return db.models.user.findOne({ where: args.id_fb}).then(user => {user.addMovie(args.id_movie);});
         }
       },
       removeMovieToUser: {
@@ -169,12 +169,12 @@ const Mutation = new GraphQLObjectType({
           id_movie: {
             type: new GraphQLNonNull(GraphQLInt)
           },
-          id_user: {
+          id_fb: {
             type: new GraphQLNonNull(GraphQLInt)
           }
         },
         resolve (_, args) {
-          return db.models.user.findOne({ where: args.id_user}).then(user => {user.removeMovie(args.id_movie);});
+          return db.models.user.findOne({ where: args.id_fb}).then(user => {user.removeMovie(args.id_movie);});
         }
       },
       addUser: {
