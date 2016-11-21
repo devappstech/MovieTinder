@@ -167,7 +167,7 @@ const Mutation = new GraphQLObjectType({
           }
         },
         resolve (_, args) {
-          return db.models.user.findOne({ where: args.id_fb}).then(user => {user.addMovie(args.id_movie);});
+          return db.models.user.findOne({ where: args.id_fb}).success(function(user){user.addMovie(args.id_movie);});
         }
       },
       removeMovieToUser: {
@@ -181,7 +181,7 @@ const Mutation = new GraphQLObjectType({
           }
         },
         resolve (_, args) {
-          return db.models.user.findOne({ where: args.id_fb}).then(user => {user.removeMovie(args.id_movie);});
+          return db.models.user.findOne({ where: args.id_fb}).then(user => {db.models.user.removeMovie(args.id_movie);});
         }
       }
     };
