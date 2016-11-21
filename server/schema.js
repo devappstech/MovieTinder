@@ -167,7 +167,8 @@ const Mutation = new GraphQLObjectType({
           }
         },
         resolve (_, args) {
-          return db.models.user.findOne({ where: args.id_fb}).success(function(user){user.addMovie(args.id_movie);});
+//TODO still not working
+          return db.models.user.findOne({ where: args.id_fb}).success(function(user){return user.addMovie(args.id_movie);});
         }
       },
       removeMovieToUser: {
@@ -181,6 +182,7 @@ const Mutation = new GraphQLObjectType({
           }
         },
         resolve (_, args) {
+// TODO idem 
           return db.models.user.findOne({ where: args.id_fb}).then(user => {db.models.user.removeMovie(args.id_movie);});
         }
       }
