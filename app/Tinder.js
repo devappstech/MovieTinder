@@ -8,6 +8,10 @@ import SwipeCards from 'react-native-swipe-cards';
 
 import api from './api/api.js';
 
+const if_fb = 007;
+const limit = 10;
+const offset = 0;
+
 let Card = React.createClass({
   render() {
     return (
@@ -22,21 +26,14 @@ let Card = React.createClass({
 let NoMoreCards = React.createClass({
   render() {
     return (
-      <View style={styles.noMoreCards}>
+      <View style={styles.noMoreMovie}>
         <Text>No more Movie</Text>
       </View>
     )
   }
 })
 
-const Cards = [
-  {title: '' , img: 'https://images-na.ssl-images-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_SX300.jpg', description: 'ksjdkjskdskjdsj jksjdksjd kdj sdkj'},
-]
-
-const Cards2 = []
-var movies = api.getMovies().then(res => { Cards =res;})
-
-console.log(Cards2)
+const Cards = api.getMovies(offset,limit).then(res => {return res;})
 
 export default React.createClass({
   getInitialState() {
@@ -46,27 +43,21 @@ export default React.createClass({
     }
   },
   handleYup (card) {
-    console.log("yup")
+    api.addMovieToUser(id_fb,card.id);
   },
   handleNope (card) {
-    console.log("nope")
   },
   cardRemoved (index) {
-    console.log(`The index is ${index}`);
-
     let CARD_REFRESH_LIMIT = 3
-
     if (this.state.cards.length - index <= CARD_REFRESH_LIMIT + 1) {
-      console.log(`There are only ${this.state.cards.length - index - 1} cards left.`);
-
       if (!this.state.outOfCards) {
-        console.log(`Adding ${Cards2.length} more cards`)
-
+        offset += limit;
         this.setState({
-          cards: this.state.cards.concat(Cards2),
-          outOfCards: true
+          cards: this.state.cards.concat(api.getMovies(offset,limit).then(res => {return res;})),
+          outOfCards: false
         })
       }
+    //TODO cas ou le getMovies arrive à sa fin 
 
     }
 
@@ -114,7 +105,7 @@ const styles = StyleSheet.create({
   description: {
     fontSize: 10
   },
-  noMoreCards: {
+  noMoreMovie: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',

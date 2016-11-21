@@ -108,7 +108,14 @@ const Query = new GraphQLObjectType({
           }
         },
         resolve (root, args) {
-          return db.models.user.findOne({ where: args});
+          return db.models.user.findOrCreate({ where: args}).spread(function(user, created){
+            if (created == null){
+              return created
+            }
+            else {
+              return user.get({plain: true})
+            }
+          });
         }
       }
     };
@@ -176,20 +183,7 @@ const Mutation = new GraphQLObjectType({
         resolve (_, args) {
           return db.models.user.findOne({ where: args.id_fb}).then(user => {user.removeMovie(args.id_movie);});
         }
-      },
-      addUser: {
-        type: User,
-        args:{
-          id_fb: {
-            type: new GraphQLNonNull(GraphQLString)
-          },
-        },
-        resolve (_, args) {
-          return db.models.user.create({
-            id_fb: args.id_fb,
-          });
-        }
-      },
+      }
     };
   }
 });

@@ -7,8 +7,7 @@ var api = {
         movies (limit: $limit, offset: $offset){
           id,
           title,
-          img,
-          description
+          img
         }
       }
     `
@@ -28,19 +27,16 @@ var api = {
 
     })
   },
-  getUser(id){
+  getUser(id_fb){
     var query = `
       query {
-        user (id_fb: $id){
-          id,
-          title,
-          img,
-          description
+        user (id_fb: $id_fb){
+          towatch
         }
       }
     `
     var queryVars = {
-      id: id
+      id_fb: id_fb
     }
 
     var opts = {
@@ -48,22 +44,22 @@ var api = {
 
     return fetch(query, queryVars, opts).then(function (results) {
       if (results.errors) {
-        return console.log("api.getMovies() failed");
+        return console.log("api.getUser() failed");
       }
       return results.data.movies;
 
     })
   },
-  addMovieToUser(id_fbuser,id_movie){
+  addMovieToUser(id_fb,id_movie){
     var query = `
       mutation {
-        addMovieToUser (id_user: $id_fbuser,id_movie: $id_movie){
+        addMovieToUser (id_fb: $id_fb,id_movie: $id_movie){
           id
         }
       }
     `
     var queryVars = {
-      id_fbuser: id_fbuser,
+      id_fb: id_fb,
       id_movie: id_movie
     }
 
@@ -78,16 +74,16 @@ var api = {
 
     })
   },
-  addUser(id_fbuser){
+  addUser(id_fb){
     var query = `
       mutation {
-        addUser (id_fb: $id_fbuser){
+        addUser (id_fb: $id_fb){
           id
         }
       }
     `
     var queryVars = {
-      id_fbuser: id_fbuser,
+      id_fb: id_fb,
     }
 
     var opts = {
