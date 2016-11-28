@@ -36,7 +36,7 @@ public class Main {
 			    rd.close();
 			    line = result.toString();
 			    if(extractPart(line, "Type").equals("movie")){
-			    	addFilm(extractPart(line, "Title"), extractPart(line, "Plot"), extractPart(line, "Poster"), extractPart(line, "imdbRating"), extractPart(line, "imdbVotes") );
+			    	addFilm(extractPart(line, "Title"), extractPart(line, "Plot"), extractPart(line, "Year"), extractPart(line, "Poster"), extractPart(line, "imdbRating"), extractPart(line, "imdbVotes") );
 			    }
 		    }catch(Exception e){
 		    	System.err.println("err :"+e.getMessage());
@@ -61,15 +61,15 @@ public class Main {
 		return "tt"+c;
 	}
 	
-	private static void addFilm(String titre, String desc, String img, String rating, String votes){
-	    if(!rating.equals("N/A") && !img.equals("N/A") && Integer.parseInt(votes.replaceAll(",", ""))>=voteMin)sendToServer(titre,desc,img,rating);
+	private static void addFilm(String titre, String desc, String annee, String img, String rating, String votes){
+	    if(!rating.equals("N/A") && !img.equals("N/A") && Integer.parseInt(votes.replaceAll(",", ""))>=voteMin)sendToServer(titre,desc,annee,img,rating);
 	}
 	
-	private static void sendToServer(String titre, String desc, String img, String rating){
+	private static void sendToServer(String titre, String desc, String annee, String img, String rating){
 	    HttpClient httpClient = HttpClientBuilder.create().build(); //Use this instead 
 	    try {
 	        HttpPost request = new HttpPost(urlServer);
-	        String req = "mutation{addMovie(title:\""+titre+"\",description:\""+desc+"\",img:\""+img+"\",rating: "+rating+"){id}}";
+	        String req = "mutation{addMovie(title:\""+titre+"\",description:\""+desc+"\",year: "+annee+",img:\""+img+"\",rating: "+rating+"){id}}";
 	        StringEntity params =new StringEntity(req);
 	        request.addHeader("content-type", "application/graphql");
 	        request.addHeader("accept", "application/json");
