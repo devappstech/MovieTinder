@@ -1,6 +1,6 @@
 import { createStore, applyMiddleware, combineReducers } from 'redux';
 
-function cards(state = []
+function swipe(state = []
 , action) {
   switch (action.type) {
     case 'LOAD_CARDS':
@@ -10,8 +10,4 @@ function cards(state = []
   }
 }
 
-const swipeApp = combineReducers({
-  cards
-})
-
-export default swipeApp
+export default swipe

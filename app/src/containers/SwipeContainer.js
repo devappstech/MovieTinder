@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { fetchCards, fetchVoteFilm } from '../actions/SwipeView'
+import { fetchCards, fetchVoteFilm } from '../actions/SwipeActions'
 import SwipeView from '../components/SwipeView'
 
 const mapStateToProps = (state) => {
