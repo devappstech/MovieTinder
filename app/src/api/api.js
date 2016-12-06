@@ -1,30 +1,11 @@
-var fetch = require('graphql-fetch')('http://192.168.0.14:8889/graphql')
+
 
 var api = {
-  getMovies(){
-    var query = `
-      query {
-        movies {
-          id,
-          title,
-          img,
-          description
-        }
-      }
-    `
-    var queryVars = {
-    }
-
-    var opts = {
-    }
-
-    return fetch(query, queryVars, opts).then(function (results) {
-      if (results.errors) {
-        return console.log("api.getMovies() failed");
-      }
-      return results.data.movies;
-
-    })
+  getInfosUserFb(token){
+     return fetch('https://graph.facebook.com/v2.8/me?fields=id%2Cname%2Cfriends%2Cpicture&access_token='+token)
+            .then((response) => response.json())
+            .then((responseJson) => { return responseJson.movies; })
+            .catch((error) => { console.error(error); }); }
   }
 }
 

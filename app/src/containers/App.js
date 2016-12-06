@@ -1,27 +1,29 @@
 import React, {Component} from 'react';
-import { View } from 'react-native';
 import { createStore, applyMiddleware, combineReducers } from 'redux';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 
-import TabView from '../components/TabView';
 import { fetchCards } from '../actions/SwipeActions'
+import { fetchLogUser } from '../actions/LoginActions'
+import { fetchFriends } from '../actions/FindFilmActions'
 import reducers from '../reducers/AppReducer';
+import AppContainer from './AppContainer';
 
 const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
-//const reducer = combineReducers(reducers);
 const store = createStoreWithMiddleware(reducers);
 
-export default class App extends Component {
+class App extends Component {
   componentDidMount() {
     store.dispatch(fetchCards(10))
+    //store.dispatch(fetchLogUser(10))
   }
   render() {
     return (
-      //<View flex={1}>
-        //<Button title="Login" accessibilityLabel="Login" />
-      //</View>
-      <Provider store={store}><TabView/></Provider>
+      <Provider store={store}>
+        <AppContainer/>
+      </Provider>
     );
   }
 }
+
+export default App

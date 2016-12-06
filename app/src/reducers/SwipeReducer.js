@@ -1,6 +1,4 @@
-import { createStore, applyMiddleware, combineReducers } from 'redux';
-
-function swipe(state = []
+function cards(state = []
 , action) {
   switch (action.type) {
     case 'LOAD_CARDS':
@@ -10,4 +8,4 @@ function swipe(state = []
   }
 }
 
-export default swipe
+export default cards
