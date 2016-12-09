@@ -38,18 +38,35 @@ const Movie = db.define('movie', {
 
 const User = db.define('user', {
   id_fb: {
-    type: Sequelize.STRING,
+    type: Sequelize.INTEGER,
     allowNull: false,
     unique: true
   },
+  count: {
+    type: Sequelize.INTEGER,
+    defaultValue: 0,
+  },
 });
 
+
 const UserMovie = db.define('user_movie', {
-});
+  state: {
+    type: Sequelize.BOOLEAN,
+    allowNull: false,
+  },
+},
+{
+hook:{
+  afterCreate: function(usermovie, options){
+    User.findOne({ where: {id: usermovie.userId}}).then(user => {user.count ++})
+    }
+  }
+}
+);
 
 User.belongsToMany(Movie, { through: UserMovie });
 Movie.belongsToMany(User, { through: UserMovie });
 
-db.sync();
+db.sync({hook: true});
 
 export { db };

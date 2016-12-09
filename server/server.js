@@ -1,5 +1,4 @@
 import Express from 'express';
-import Session from 'express-session';
 import GraphHTTP from 'express-graphql';
 import Schema from './schema';
 

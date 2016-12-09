@@ -8,7 +8,7 @@ import SwipeCards from 'react-native-swipe-cards';
 
 import api from './api/api.js';
 
-const if_fb = 007;
+const if_fb = 7;
 const limit = 10;
 const offset = 0;
 
@@ -57,7 +57,7 @@ export default React.createClass({
           outOfCards: false
         })
       }
-    //TODO cas ou le getMovies arrive à sa fin 
+    //TODO cas ou le getMovies arrive à sa fin
 
     }
 

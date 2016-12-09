@@ -1,12 +1,17 @@
 import {
   GraphQLObjectType,
+  GraphQLInputObjectType,
   GraphQLInt,
   GraphQLString,
   GraphQLFloat,
   GraphQLList,
+  GraphQLBoolean,
   GraphQLSchema,
   GraphQLNonNull,
 } from 'graphql';
+
+import sequelize from 'sequelize';
+
 import { db } from './db';
 
 const Movie = new GraphQLObjectType({
@@ -66,9 +71,15 @@ const User = new GraphQLObjectType({
         }
       },
       id_fb: {
-        type: GraphQLString,
+        type: GraphQLInt,
         resolve (user) {
           return user.id_fb;
+        }
+      },
+      count: {
+        type: GraphQLInt,
+        resolve (user) {
+          return user.usercount;
         }
       },
       towatchs: {
@@ -77,6 +88,39 @@ const User = new GraphQLObjectType({
           return user.getMovies();
         }
       }
+    };
+  }
+});
+
+const UserMovie = new GraphQLObjectType({
+  name: 'UserMovie',
+  description: 'This represents a User and a movie association',
+  fields: () => {
+    return {
+      id: {
+        type: GraphQLInt,
+        resolve (user_movie) {
+          return user_movie.id;
+        }
+      },
+      state: {
+        type: GraphQLBoolean,
+        resolve(user_movie){
+          return user_movie.state;
+        }
+      },
+      userId: {
+        type: GraphQLInt,
+        resolve (user_movie) {
+          return user_movie.userId;
+        }
+      },
+      movieId: {
+        type: GraphQLString,
+        resolve (user_movie) {
+          return user_movie.movieId;
+        }
+      },
     };
   }
 });
@@ -117,7 +161,33 @@ const Query = new GraphQLObjectType({
             }
           });
         }
-      }
+      },
+      user_movie: {
+        type: new GraphQLList(UserMovie),
+        args: {
+          offset: {
+            type: GraphQLInt
+          },
+          limit: {
+            type: GraphQLInt
+          },
+          users: {
+            type: new GraphQLList(GraphQLInt)
+          }
+        },
+        resolve (root, args) {
+          return db.models.user_movie.findAll({
+            offset: args.offset,
+            limit: args.limit,
+            where: {
+              state: true,
+              userId: [args.users]
+            },
+            attributes: {include: [[sequelize.fn('COUNT', sequelize.col('userId')), 'usercount']]},
+            group: 'movieId',
+          });
+        }
+      },
     };
   }
 });
@@ -164,11 +234,13 @@ const Mutation = new GraphQLObjectType({
           },
           id_fb: {
             type: new GraphQLNonNull(GraphQLInt)
+          },
+          bool: {
+            type: new GraphQLNonNull(GraphQLBoolean)
           }
         },
         resolve (_, args) {
-//TODO still not working
-          return db.models.user.findOne({ where: args.id_fb}).success(function(user){return user.addMovie(args.id_movie);});
+          return db.models.user.findOne({ where: args.id_fb}).then(user => { user.addMovie(args.id_movie, {state:args.bool}); return user;});
         }
       },
       removeMovieToUser: {
@@ -182,8 +254,7 @@ const Mutation = new GraphQLObjectType({
           }
         },
         resolve (_, args) {
-// TODO idem 
-          return db.models.user.findOne({ where: args.id_fb}).then(user => {db.models.user.removeMovie(args.id_movie);});
+          return db.models.user.findOne({ where: args.id_fb}).then(user => { user.removeMovie(args.id_movie); return user;});
         }
       }
     };
