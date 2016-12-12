@@ -1,13 +1,18 @@
 import {
   GraphQLObjectType,
+  GraphQLInputObjectType,
   GraphQLInt,
   GraphQLString,
   GraphQLFloat,
   GraphQLList,
+  GraphQLBoolean,
   GraphQLSchema,
   GraphQLNonNull,
 } from 'graphql';
-import { db } from './db';
+
+import sequelize from 'sequelize';
+
+import { db, MovieDb } from './db';
 
 const Movie = new GraphQLObjectType({
   name: 'Movie',
@@ -47,7 +52,7 @@ const Movie = new GraphQLObjectType({
       rating: {
         type: GraphQLString,
         resolve (movie) {
-          return movie.ranking;
+          return movie.rating;
         }
       },
     };
@@ -60,23 +65,44 @@ const User = new GraphQLObjectType({
   fields: () => {
     return {
       id: {
-        type: GraphQLInt,
+        type: GraphQLString,
         resolve (user) {
           return user.id;
         }
       },
-      id_fb: {
-        type: GraphQLString,
+      count: {
+        type: GraphQLInt,
         resolve (user) {
-          return user.id_fb;
-        }
-      },
-      towatchs: {
-        type: new GraphQLList(Movie),
-        resolve(user){
-          return user.getMovies();
+          return user.count;
         }
       }
+    };
+  }
+});
+
+const UserMovie = new GraphQLObjectType({
+  name: 'UserMovie',
+  description: 'This represents a User and a movie association',
+  fields: () => {
+    return {
+      movieId: {
+        type: GraphQLInt,
+        resolve (user_movie) {
+          return user_movie.movieId;
+        }
+      },
+      count: {
+        type: GraphQLInt,
+        resolve (user_movie) {
+          return user_movie.count;
+        }
+      },
+      movie: {
+        type: Movie,
+        resolve (user_movie) {
+          return user_movie.movie;
+        }
+      },
     };
   }
 });
@@ -100,17 +126,52 @@ const Query = new GraphQLObjectType({
           return db.models.movie.findAll({order: [['rating', 'DESC']], offset: args.offset, limit: args.limit });
         }
       },
-      users: {
+      user: {
         type: User,
         args: {
-          id_fb: {
-            type: GraphQLInt
+          id: {
+            type: GraphQLString
           }
         },
         resolve (root, args) {
-          return db.models.user.findOne({ where: args});
+          return db.models.user.findOrCreate({ where: args}).spread(function(user, created){
+            if (created == null){
+              return created
+            }
+            else {
+              return user.get({plain: true})
+            }
+          });
         }
-      }
+      },
+      user_movie: {
+        type: new GraphQLList(UserMovie),
+        args: {
+          offset: {
+            type: GraphQLInt
+          },
+          limit: {
+            type: GraphQLInt
+          },
+          users: {
+            type: new GraphQLList(GraphQLString)
+          }
+        },
+        resolve (root, args) {
+          return db.models.user_movie.findAll({
+            offset: args.offset,
+            limit: args.limit,
+            attributes: ['movieId', [sequelize.fn('count', sequelize.col('movieId')),'count']],
+            where: {
+              state: true,
+              userId: [args.users]
+            },
+            order: 'count DESC, rating DESC',
+            group: 'movieId',
+            include: [{model: db.models.movie}],
+          });
+        }
+      },
     };
   }
 });
@@ -156,40 +217,36 @@ const Mutation = new GraphQLObjectType({
             type: new GraphQLNonNull(GraphQLInt)
           },
           id_user: {
-            type: new GraphQLNonNull(GraphQLInt)
+            type: new GraphQLNonNull(GraphQLString)
+          },
+          bool: {
+            type: new GraphQLNonNull(GraphQLBoolean)
           }
         },
         resolve (_, args) {
-          return db.models.user.findOne({ where: args.id_user}).then(user => {user.addMovie(args.id_movie);});
+          return db.models.user.findOne({ where: {id:args.id_user}}).then(
+            user => {
+              user.update({count: user.count+1});
+              user.addMovie(args.id_movie, {state:args.bool});
+              return user;
+            });
         }
       },
+      /*
       removeMovieToUser: {
         type: User,
         args:{
           id_movie: {
             type: new GraphQLNonNull(GraphQLInt)
           },
-          id_user: {
+          id_fb: {
             type: new GraphQLNonNull(GraphQLInt)
           }
         },
         resolve (_, args) {
-          return db.models.user.findOne({ where: args.id_user}).then(user => {user.removeMovie(args.id_movie);});
+          return db.models.user.findOne({ where: args.id_fb}).then(user => { user.removeMovie(args.id_movie); return user;});
         }
-      },
-      addUser: {
-        type: User,
-        args:{
-          id_fb: {
-            type: new GraphQLNonNull(GraphQLString)
-          },
-        },
-        resolve (_, args) {
-          return db.models.user.create({
-            id_fb: args.id_fb,
-          });
-        }
-      },
+      }*/
     };
   }
 });

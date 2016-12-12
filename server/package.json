@@ -9,6 +9,7 @@
   "author": "Maxence Boucas",
   "license": "ISC",
   "dependencies": {
+    "babel-cli": "^6.18.0",
     "babel-preset-node5": "^11.1.0",
     "casual": "^1.5.8",
     "express": "^4.14.0",

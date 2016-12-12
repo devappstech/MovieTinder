@@ -3,13 +3,13 @@ import casual from 'casual';
 import _ from 'lodash';
 
 const db = new Sequelize(
-  'towatch',
-  'root',
-  'root',
+  'tindermovie',
+  'phpmyadmin',
+  'password',
   {
     dialect: 'mysql',
     host: 'localhost',
-    port: '8889'
+    port: '3306'
   },
 );
 
@@ -37,19 +37,41 @@ const Movie = db.define('movie', {
 });
 
 const User = db.define('user', {
-  id_fb: {
+  id: {
     type: Sequelize.STRING,
     allowNull: false,
-    unique: true
+    primaryKey: true
+  },
+  count: {
+    type: Sequelize.INTEGER,
+    defaultValue: 0,
   },
 });
 
+
 const UserMovie = db.define('user_movie', {
-});
+  state: {
+    type: Sequelize.BOOLEAN,
+    allowNull: false,
+  },
+  count: {
+    type: Sequelize.VIRTUAL
+  },
+  userId:{
+    type: Sequelize.STRING,
+    allowNull: false
+},
+}
+);
+
+UserMovie.removeAttribute('id');
 
 User.belongsToMany(Movie, { through: UserMovie });
 Movie.belongsToMany(User, { through: UserMovie });
 
-db.sync();
+Movie.hasMany(UserMovie)
+UserMovie.belongsTo(Movie)
 
-export { db };
+db.sync({force: true});
+
+export { db, Movie };
