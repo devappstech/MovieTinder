@@ -1,15 +1,25 @@
+import Api from '../api/Api'
+
 
 export const FIND_FILM = 'FIND_FILM'
-export function findFilm(json) {
+export function findFilm(movie) {
   return {
     type: FIND_FILM,
-    film:json.film
+    film:movie
   }
 }
 
 export function fetchFindFilm(users,nb) {
   return dispatch => {
-      return dispatch(findFilm(require('./loadFilm.json')))
+    Api.findFilm(users,nb).then(function (results) {
+      if (results.errors) {
+        console.log("api.findfilm() failed");
+      }else {
+        return dispatch(findFilm(results.data.user_movie[0].movie))
+      }
+    }).catch(function(error) {
+      console.log('There has been a problem with your fetch operation: ' + error);
+    });
   }
 }
 
@@ -32,7 +42,6 @@ export function addFriends(friends) {
 
 export const TOGGLE_FRIEND = 'TOGGLE_FRIEND'
 export function toggleFriend(friend) {
-  //console.log(friend);
   return {
     type: TOGGLE_FRIEND,
     friend:friend

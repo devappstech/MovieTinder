@@ -1,47 +1,38 @@
-/*export const REQUEST_CARDS = 'REQUEST_CARDS'
-
-export function requestCards(k) {
-  return {
-    type: REQUEST_CARDS,
-    k
-  }
-}*/
+import Api from '../api/Api'
+import {increaseUserCount} from './LoginActions'
 
 export const LOAD_CARDS = 'LOAD_CARDS'
-export function loadCards(json) {
+export function loadCards(movies) {
   return {
     type: LOAD_CARDS,
-    cards:json.data
+    cards:movies
   }
 }
 
-export function fetchCards(k) {
-  return dispatch => {
-    //dispatch(requestCards(k))
-    /*return fetch(`http://www.reddit.com/r/kk.json`)
-      .then(response => response.json())
-      .then(json => dispatch(loadCards(json)))*/
-      return dispatch(loadCards(require('./loadCards.json')))
-  }
-}
-
-/*
-REQUEST ADD FILM
-*/
-
-export const VOTE_FILM = 'VOTE_FILM'
-export function voteFilm() {
+export const RESET_CARDS = 'RESET_CARDS'
+export function resetCards() {
   return {
-    type: VOTE_FILM
+    type: RESET_CARDS
   }
 }
 
-export function fetchVoteFilm(film,isYup,userId) {
+export function fetchCards(offset, limit) {
   return dispatch => {
-    //dispatch(requestAddFilm(k))
-    /*return fetch(`http://www.reddit.com/r/kk.json`)
-      .then(response => response.json())
-      .then(json => dispatch(loadCards(json)))*/
-      return dispatch(voteFilm())
+    Api.getMovies(offset,limit).then(function (results) {
+      dispatch(increaseUserCount())
+      return dispatch(loadCards(results.data.movies))
+    }).catch(function(error) {
+      console.log('There has been a problem with your fetch operation: ' + error);
+    });
+  }
+}
+
+export function fetchVoteFilm(userId,filmId,isYup) {
+  return dispatch => {
+    Api.addMovieToUser(userId,filmId,isYup).then(function (results) {
+      //do nothing
+    }).catch(function(error) {
+      console.log('There has been a problem with your fetch operation: ' + error);
+    });
   }
 }

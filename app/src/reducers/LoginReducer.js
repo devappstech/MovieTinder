@@ -13,13 +13,19 @@ function user(state = { isLogged : false, user : {} }
       return Object.assign({}, state, {
         isLogged: true,
         user: Object.assign({}, state.user, {
-          compteur: action.user.compteur
+          compteur: action.user.count
         })
       })
-      case 'LOGOUT_USER':
+    case 'LOGOUT_USER':
       return Object.assign({}, state, {
         isLogged: false,
         user: {}
+      })
+    case 'INCREASE_USER_COUNT':
+      return Object.assign({}, state, {
+        user: Object.assign({}, state.user, {
+          compteur: state.user.compteur+10
+        })
       })
     default:
       return state

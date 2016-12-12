@@ -13,10 +13,6 @@ const createStoreWithMiddleware = applyMiddleware(thunk)(createStore);
 const store = createStoreWithMiddleware(reducers);
 
 class App extends Component {
-  componentDidMount() {
-    store.dispatch(fetchCards(10))
-    //store.dispatch(fetchLogUser(10))
-  }
   render() {
     return (
       <Provider store={store}>

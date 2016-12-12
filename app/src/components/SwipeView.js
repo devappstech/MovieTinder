@@ -23,7 +23,7 @@ let NoMoreCards = React.createClass({
   }
 })
 
-const SwipeView = ({ cards, handleVote, cardRemoved }) => (
+const SwipeView = ({ cards, userId, handleVote, cardRemoved, compteur }) => (
   <SwipeCards
     cards={cards}
     loop={false}
@@ -33,14 +33,16 @@ const SwipeView = ({ cards, handleVote, cardRemoved }) => (
     showYup={true}
     showNope={true}
 
-    handleYup={(card) => {handleVote(card,true)}}
-    handleNope={(card) => handleVote(card,false)}
-    cardRemoved={(index) => cardRemoved(index,cards.length)}
+    handleYup={(card) => {handleVote(userId,card,true)}}
+    handleNope={(card) => handleVote(userId,card,false)}
+    cardRemoved={(index) => cardRemoved(index,cards,compteur)}
   />
 )
 
 SwipeView.propTypes = {
   cards: PropTypes.array.isRequired,
+  userId: PropTypes.string.isRequired,
+  compteur: PropTypes.number.isRequired,
   handleVote: PropTypes.func.isRequired,
   cardRemoved: PropTypes.func.isRequired
 }

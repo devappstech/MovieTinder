@@ -7,7 +7,8 @@ const mapStateToProps = (state) => {
     compteur: state.findFilm.compteur,
     isFinding: state.findFilm.isFinding,
     friends: state.findFilm.friends,
-    film: state.findFilm.film
+    film: state.findFilm.film,
+    idUser: state.user.user.id
   }
 }
 
@@ -16,8 +17,8 @@ const mapDispatchToProps = (dispatch,ownProps) => {
     selectFriend: (friend) => {
       dispatch(toggleFriend(friend))
     },
-    findFilm: (user,compteur) => {
-      dispatch(fetchFindFilm(user,compteur))
+    findFilm: (users,compteur) => {
+      dispatch(fetchFindFilm(users,compteur))
     },
     resetFindFilm: () => {
       dispatch(resetFindFilm())

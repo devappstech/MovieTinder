@@ -36,7 +36,7 @@ FriendButton.propTypes = {
 }
 
 
-const FindFilmView = ({ compteur, isFinding, friends, film, selectFriend, findFilm, resetFindFilm }) => (
+const FindFilmView = ({ idUser , compteur, isFinding, friends, film, selectFriend, findFilm, resetFindFilm }) => (
     <View flex={1}>
     <View flex={1}>
       {!isFinding?
@@ -56,12 +56,13 @@ const FindFilmView = ({ compteur, isFinding, friends, film, selectFriend, findFi
         <FilmView resetFindFilm={resetFindFilm} film={film}/> }
       </View>
       <View>
-       <Button onPress={()=>findFilm([], compteur)} title="Find film" accessibilityLabel="FindFilm" />
+       <Button onPress={()=>{findFilm([idUser, ...(friends.filter(item => {return item.selected}).map(item => item.id))], compteur)}} title="Find film" accessibilityLabel="FindFilm" />
       </View>
     </View>
 )
 
 FindFilmView.propTypes = {
+  idUser: PropTypes.string.isRequired,
   compteur: PropTypes.number.isRequired,
   isFinding: PropTypes.bool.isRequired,
   friends: PropTypes.array.isRequired,
