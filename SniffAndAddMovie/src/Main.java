@@ -15,12 +15,14 @@ public class Main {
 	private static int idStart = 1;
 	private static int idEnd = 1000;
 	private static int voteMin = 100;
+	private static int minYear = 1800;
 	
 	public static void main(String[] args) {
 		urlServer = args[0];
 		idStart = Integer.parseInt(args[1]);
 		idEnd = Integer.parseInt(args[2]);
 		voteMin = Integer.parseInt(args[3]);
+		minYear = Integer.parseInt(args[4]);
 		
 	    for(int i = idStart; i <= idEnd ; ++i){
 		    StringBuilder result = new StringBuilder();
@@ -62,7 +64,12 @@ public class Main {
 	}
 	
 	private static void addFilm(String titre, String desc, String annee, String img, String rating, String votes){
-	    if(!rating.equals("N/A") && !img.equals("N/A") && Integer.parseInt(votes.replaceAll(",", ""))>=voteMin)sendToServer(titre,desc,annee,img,rating);
+	    if(!rating.equals("N/A") &&
+	       !img.equals("N/A") &&
+	       !annee.equals("N/A") &&
+	       Integer.parseInt(votes.replaceAll(",", "")) >= voteMin &&
+	       Integer.parseInt(annee) >= minYear )
+	    	sendToServer(titre,desc,annee,img,rating);
 	}
 	
 	private static void sendToServer(String titre, String desc, String annee, String img, String rating){

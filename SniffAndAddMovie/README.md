@@ -1,4 +1,4 @@
 Usage :
 ```
-java -jar sniff.jar <http://urlServerGraphQL> <idMin> <idMax> <minVote>
+java -jar sniff.jar <http://urlServerGraphQL> <idMin> <idMax> <minVote> <minYear>
 ```
