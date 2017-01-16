@@ -27,6 +27,7 @@ const ProfilView = ({ logout, user }) => (
       onLogout={function(e){logout();console.log(e)}}
       onCancel={function(e){console.log(e)}}
       onPermissionsMissing={function(e){console.log(e)}}
+      style={{alignSelf:'center'}}
     />
   </View>
 )

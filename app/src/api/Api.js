@@ -1,4 +1,4 @@
-var fetch = require('graphql-fetch')('http://192.168.0.38:8889/graphql');
+var fetch = require('graphql-fetch')('http://vps360306.ovh.net:8889/graphql');
 
 var api = {
   getMovies(offset,limit){

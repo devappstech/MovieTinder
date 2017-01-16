@@ -4,12 +4,12 @@ import _ from 'lodash';
 
 const db = new Sequelize(
   'tindermovie',
-  'phpmyadmin',
-  'password',
+  'root',
+  'root',
   {
     dialect: 'mysql',
     host: 'localhost',
-    port: '3306'
+    port: '8889'
   },
 );
 
@@ -72,6 +72,6 @@ Movie.belongsToMany(User, { through: UserMovie });
 Movie.hasMany(UserMovie)
 UserMovie.belongsTo(Movie)
 
-db.sync({force: true});
+db.sync();
 
-export { db, Movie };
+export { db };

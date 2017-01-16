@@ -29,7 +29,6 @@ class FBLoginView extends Component {
                 }else{
                   this.context.logout()
                 }
-
               }}
               color={"#000000"}
               backgroundColor={"#ffffff"} name={"facebook"}  size={20} borderRadius={100} >

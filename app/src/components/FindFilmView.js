@@ -44,12 +44,12 @@ const FindFilmView = ({ idUser , compteur, isFinding, friends, film, selectFrien
             <TouchableHighlight
               key={friend.name}
               onPress={()=>selectFriend(friend)}>
-              <View height={50} style={{flex: 1, flexDirection: 'row'}}
+              <View height={50} style={{flexDirection: 'row'}}
                backgroundColor={friend.selected ? "#b4f6ff":"#f0f5f5"}>
-               <Image
+                <Image
                 style={{width: 40, height: 40, borderRadius:20, margin:5}}
                 source={{uri:friend.picture.data.url}} />
-              <Text style={{fontSize:25, margin:5}}>{friend.name}</Text>
+                <Text style={{fontSize:25, margin:5}}>{friend.name}</Text>
               </View>
            </TouchableHighlight>)
         :
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderWidth: 1,
     elevation: 1,
-    height: 300,
+    height: 600,
   },
   img: {
     flex: 1,

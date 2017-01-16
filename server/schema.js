@@ -123,7 +123,11 @@ const Query = new GraphQLObjectType({
           }
         },
         resolve (root,args) {
-          return db.models.movie.findAll({order: [['rating', 'DESC']], offset: args.offset, limit: args.limit });
+          return db.models.movie.findAll({
+            order: [['rating', 'DESC']],
+            offset: args.offset,
+            limit: args.limit,
+          });
         }
       },
       user: {
@@ -231,22 +235,7 @@ const Mutation = new GraphQLObjectType({
               return user;
             });
         }
-      },
-      /*
-      removeMovieToUser: {
-        type: User,
-        args:{
-          id_movie: {
-            type: new GraphQLNonNull(GraphQLInt)
-          },
-          id_fb: {
-            type: new GraphQLNonNull(GraphQLInt)
-          }
-        },
-        resolve (_, args) {
-          return db.models.user.findOne({ where: args.id_fb}).then(user => { user.removeMovie(args.id_movie); return user;});
-        }
-      }*/
+      }
     };
   }
 });
